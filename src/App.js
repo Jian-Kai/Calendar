@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+import Calendar from './Calendar';
+
+const Dropdown = ({ fetch }) => {
+    return (
+        <select onChange={(e) => { fetch(e.target.value) }}>
+            <option value="data1">data1</option>
+            <option value="data2">data2</option>
+            <option value="data3">data3</option>
+            <option value="data4">data4</option>
+        </select>
+    )
+}
+
+const App = () => {
+    const [data, setData] = useState([]);
+
+    let date = {};
+    let month = [];
+
+    async function fetchData(name = 'data1') {
+        const response = await fetch('./json/' + name + '.json');
+        const json = await response.json();
+        setData(json);
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, []);
+
+    data.map(d => {
+        let YM = moment(new Date(d.date)).format("YYYYMM");
+        if (date[YM])
+            date[YM].push(d);
+        else {
+            date[YM] = [d];
+            month.push(YM);
+        }
+        return true;
+    });
+    month.sort()
+    console.log(date);
+    console.log(month);
+
+
+
+    return (
+        <div>
+            <Dropdown fetch={fetchData} />
+            {
+                (data.length > 0)? <Calendar data={data} month={month}/> :''
+            }
+        </div>)
 }
 
 export default App;
