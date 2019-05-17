@@ -10,24 +10,49 @@ const Month = ({ current, month, moveMon }) => {
     const [focus, setFocus] = useState(0)
 
     //console.log(current)
-    const clickMon = (id) => {
-        console.log('click mon')
-        console.log(id)
-        if (id === 2 && (current + 2) < month.length - 1) {
-            moveMon(1)
-            setFocus(1)
-        } else if (id === 0 && current > 0) {
-            moveMon(-1)
-            setFocus(1)
+    const clickMon = (value, id) => {
+        switch (value) {
+            case -1:
+                console.log('pre')
+                if (id > 1)
+                    setFocus(id + value)
+                else {
+                    moveMon(value);
+                    current === 0 ? setFocus(0) : setFocus(1);
+                }
+                break;
+            case 1:
+                console.log('next')
+                if (id < 1)
+                    setFocus(id + value)
+                else {
+                    moveMon(value);
+                    current + 2 === month.length - 1 ? setFocus(2) : setFocus(1);
+                }
+                break;
+            case 0:
+                console.log('month');
+                switch (id) {
+                    case 0:
+                        current === 0 ? setFocus(0) : setFocus(1);
+                        moveMon(-1);
+                        break;
+                    case 1:
+                        setFocus(1)
+                        break;
+                    case 2:
+                        current + 2 === month.length - 1 ? setFocus(2) : setFocus(1);
+                        moveMon(1);
+                        break;
+                    default:
+                }
+                break;
+            default:
         }
-        else {
-            setFocus(id)
-        }
-
     }
     return (
         <div className='monthLayout'>
-            <a className='btn pre' onClick={() => moveMon(-1)}></a>
+            <a className='btn pre' onClick={() => clickMon(-1, focus)}></a>
             <ul className='month'>
                 {
                     show.map((li, index) => {
@@ -35,9 +60,9 @@ const Month = ({ current, month, moveMon }) => {
                             width: width,
                         }
                         let tab_class = (focus === index) ? 'tab now' : 'tab';
-                        let Y = li.slice(0,4);
+                        let Y = li.slice(0, 4);
                         let M = li.slice(4, li.length)
-                        return <li key={index} className={tab_class} style={style} onClick={() => clickMon(index)}>
+                        return <li key={index} className={tab_class} style={style} onClick={() => clickMon(0, index)}>
                             <a>
                                 <span>
                                     {Y + ' ' + M + '月'}
@@ -47,7 +72,7 @@ const Month = ({ current, month, moveMon }) => {
                     })
                 }
             </ul>
-            <a className='btn next' onClick={() => moveMon(1)}></a>
+            <a className='btn next' onClick={() => clickMon(1, focus)}></a>
         </div>
     )
 }
