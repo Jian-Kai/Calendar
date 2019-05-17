@@ -51,7 +51,7 @@ const App = () => {
         <div>
             <Dropdown fetch={fetchData} />
             {
-                (data.length > 0)? <Calendar data={data} month={month}/> :''
+                (data.length > 0)? <Calendar date={date} month={month}/> :''
             }
         </div>)
 }

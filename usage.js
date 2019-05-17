@@ -110,6 +110,7 @@ $('.calendars').calendar('destroy');
 HTML
 ===========================================================
 <div className="calendars"> // 可加上這兩個修飾符來切換日曆模式或列表模式 calendars_daymode,calendars_listmode
+	
 	<div class="calendars_tabWrap">
 		<a href="#" class="prev on"></a>
 		<ul class="ntb_tab">
@@ -125,6 +126,7 @@ HTML
         </ul>
 		<a href="#" class="next on"></a>
 	</div>
+
 	<div class="calendars_weeksWrap">
 		<th>星期日</th>
 		<th>星期一</th>
@@ -134,6 +136,7 @@ HTML
 		<th>星期五</th>
 		<th>星期六</th>
 	</div>
+
 	<ul class="calendars_daysWrap">
 		<li class="calendars_days disabled"></li>
 		<li class="calendars_days hasData">

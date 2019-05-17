@@ -1,0 +1,30 @@
+:root{
+    --border-color: #f4f4f4;
+    /* #f4f4f4 */
+}
+
+.dayLayout{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: default;
+    background: #FFFFFF;
+    padding: 0;
+}
+
+.day{
+    line-height: 30px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    box-sizing: border-box;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color); 
+}
+.first {
+    border-left: 1px solid var(--border-color); 
+}
+.last {
+    border-right: 1px solid var(--border-color); 
+}
