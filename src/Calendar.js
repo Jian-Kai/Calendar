@@ -1,11 +1,11 @@
-import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import moment from 'moment';
 import Month from './Month/Month';
 import Day from './Day/Day';
 import Dates from './Dates/Dates';
 
-const Calendar = (props, ref ) => {
-    const { date, month, option, mode, width} = props;
+const Calendar = (props, ref) => {
+    const { date, month, option, mode, width, modeChange, pushDate } = props;
     // console.log(option.initYearMonth)
     let page = month.indexOf(option.initYearMonth);
     if (page === -1) {
@@ -23,13 +23,16 @@ const Calendar = (props, ref ) => {
     // console.log(page);
     let cur = 0;
     let foc = 0;
-    if (page === month.length - 1) {
-        cur = page - 2; foc = 2;
-    } else if (page === 0) {
-        cur = 0; foc = 0
-    } else {
-        cur = page; foc = 1;
+    if (option.initYearMonth !== '') {
+        if (page === month.length - 1) {
+            cur = page - 2; foc = 2;
+        } else if (page === 0) {
+            cur = 0; foc = 0
+        } else {
+            cur = page; foc = 1;
+        }
     }
+
     const [current, setCurrent] = useState(cur);
     const [focus, setFocus] = useState(foc);
     const [arr, setArr] = useState(
@@ -63,7 +66,7 @@ const Calendar = (props, ref ) => {
         switch (value) {
             case -1:
                 console.log('pre')
-                if (id > 1){
+                if (id > 1) {
                     setFocus(id + value)
                 }
                 else {
@@ -127,14 +130,33 @@ const Calendar = (props, ref ) => {
 
     //console.log(date[month[current + focus]])
 
-    //const inputRef = useRef();
+    // const inputRef = useRef(ref);
     useImperativeHandle(ref, () => ({
         nextMonth: () => {
             clickMon(1, focus);
             return;
         },
-        prevMonth:()=>{
+        prevMonth: () => {
             clickMon(-1, focus);
+            return;
+        },
+        switch: () => {
+            modeChange();
+            return;
+        },
+        inputData: () => {
+            const input = [{
+                "guaranteed": true, // {boolean}
+                "date": "2016/11/20", // {string} YYYY/MM/DD
+                "price": "234567", // {string|number} XXXXXX | 近期上架
+                "availableVancancy": 0, // {number}
+                "totalVacnacy": 20, // {number}
+                "status": "報名" // {string} 報名 | 後補 | 預定 | 截止 | 額滿 | 關團
+            }];
+            const newYM = moment(input[0].date).format('YYYYMM');
+            //console.log(input.date)
+            date[newYM].push(input[0]);
+            pushDate(date, newYM);
             return;
         }
     }));

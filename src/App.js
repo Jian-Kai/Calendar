@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import moment from 'moment';
 
 
@@ -16,13 +16,16 @@ const Dropdown = ({ fetch }) => {
     )
 }
 
-const Switch = ({ mode, modeChange }) => {
+function Switch(props) {
+    const { mode, modeChange } = props;
+
     return <div onClick={modeChange}>
         {
             (mode) ? '切換列表模式' : '切換月曆模式'
         }
     </div>
 }
+
 
 const App = () => {
 
@@ -50,7 +53,7 @@ const App = () => {
         await fetchData();
         handleWindowChange();
         window.addEventListener('resize', handleWindowChange);
-        window.Cal = inputEl.current;
+        window.Cal = inputEl;
     }
 
     useEffect(() => {
@@ -75,7 +78,7 @@ const App = () => {
     }
 
     const option = {
-        initYearMonth: '201901',
+        initYearMonth: '',
         dataKeySetting: {
             // 保證出團
             'guaranteed': 'certain',
@@ -108,7 +111,16 @@ const App = () => {
 
     const inputEl = useRef(null);
 
-
+    const pushDate = (input, YM) =>{
+        console.log(input);
+        let temp = []
+        for(let i in input){
+            for(let j = 0; j < input[i].length; j++)
+                temp.push(input[i][j])
+        }
+        setData(temp);
+        console.log(data);
+    }
 
     return (
         <div >
@@ -116,7 +128,7 @@ const App = () => {
             <Switch mode={mode} modeChange={modeChange} />
             <br />
             {
-                (data.length > 0) ? <Calendar date={date} month={month} option={option} mode={mode} width={size} ref={inputEl} /> : ''
+                (data.length > 0) ? <Calendar date={date} pushDate={pushDate} month={month} option={option} mode={mode} width={size} modeChange={modeChange} ref={inputEl} /> : ''
             }
         </div>)
 }
