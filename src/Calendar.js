@@ -4,11 +4,11 @@ import Month from './Month/Month';
 import Day from './Day/Day';
 import Dates from './Dates/Dates';
 
-const Calendar = ({ date, month }) => {
+const Calendar = ({ date, month, mode }) => {
 
     const [current, setCurrent] = useState(0);
     const [focus, setFocus] = useState(0);
-
+    const width = (document.body.clientWidth) / 7;
     const [arr, setArr] = useState(
         () => {
             const col = 6;
@@ -102,8 +102,8 @@ const Calendar = ({ date, month }) => {
 
     return <div>
         <Month current={current} focus={focus} month={month} clickMon={clickMon} />
-        <Day />
-        <Dates date={date} month={month} current={current} focus={focus} arr={arr} clickDate={clickDate}/>
+        <Day width={width}/>
+        <Dates mode={mode} width={width} data={date[month[current + focus]]} arr={arr} clickDate={clickDate}/>
     </div>
 }
 

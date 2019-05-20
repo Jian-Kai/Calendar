@@ -2,13 +2,15 @@ import React from 'react';
 import './Dates.css'
 import moment from 'moment';
 
-import InDate from './Date';
+import Detial from './Detial';
 
-const Dates = ({ date, month, focus, current, arr, clickDate }) => {
+const Dates = ({ mode, width, data, arr, clickDate }) => {
+    const thewidth = (!mode) ? document.body.clientWidth : width;
+    console.log(thewidth)
 
-    const width = (document.body.clientWidth) / 7;
+    const week = (!mode) ? 'list' : 'week';
 
-    const thisMon = date[month[current + focus]];
+    const thisMon = data;
     let calendarArr = [];
     for (let i = 0; i < thisMon.length; i++) {
         let found = calendarArr.find((trip) => trip.date === thisMon[i].date);
@@ -34,39 +36,56 @@ const Dates = ({ date, month, focus, current, arr, clickDate }) => {
         if (count < calendarArr.length - 1)
             count++;
         if (deti !== null) {
-            return <InDate deti={deti} row={r} col={c} click={clickDate} />
+            return <Detial deti={deti} row={r} col={c} click={clickDate} mode={mode} />
         }
     }
 
     return <div className='dateLayout'>
         {
             arr.map((cols, colid) => {
-                return cols.map((rows, rowid) => {
-                    let classD = (rowid === 6) ? 'date sat' : 'date';
-                    if (colid * 7 + rowid >= firstDay && colid * 7 + rowid < final)
-                        classD += ' exist'
-                    // if (rows.pos > 0) classD += ' exist';
-                    if (arr[colid][rowid] === 1) classD += ' clicked';
-                    return (
+                return <div key={colid} className={week}>{
+                    cols.map((rows, rowid) => {
+                        let classD;
+                        if (mode) {
+                            classD = (rowid === 6) ? 'date sat' : 'date';
+                            if (colid * 7 + rowid >= firstDay && colid * 7 + rowid < final)
+                                classD += ' exist'
+                        }
+                        else {
+                            classD = 'dateH'
+                            if (colid * 7 + rowid - firstDay + 1 === moment(new Date(calendarArr[count].date)).date())
+                                classD = 'dateL exist'
+                        }
 
-                        <div key={rowid} className={classD} style={{ width: width }}>
-                            {
-                                (colid * 7 + rowid >= firstDay && colid * 7 + rowid < final) ?
-                                    <span className='num'>
-                                        {colid * 7 + rowid - firstDay + 1}
-                                    </span>
-                                    :
-                                    ''
-                            }
-                            {
-                                (colid * 7 + rowid - firstDay + 1 === moment(new Date(calendarArr[count].date)).date()) ?
-                                    Sdetial(calendarArr[count], rowid, colid)
-                                    :
-                                    ''
-                            }
-                        </div>
-                    )
-                })
+
+                        if (arr[colid][rowid] === 1) classD += ' clicked';
+                        return (
+
+                            <div key={rowid} className={classD} style={{ width: thewidth }}>
+                                {
+                                    (colid * 7 + rowid >= firstDay && colid * 7 + rowid < final) ?
+                                        <span className='num'>
+                                            {colid * 7 + rowid - firstDay + 1}
+                                        </span>
+                                        :
+                                        ''
+                                }
+                                {
+                                    (colid * 7 + rowid - firstDay + 1 === moment(new Date(calendarArr[count].date)).date() && calendarArr[count].guaranteed) ?
+                                        <span className='guaranteed'>成團</span>
+                                        :
+                                        ''
+                                }
+                                {
+                                    (colid * 7 + rowid - firstDay + 1 === moment(new Date(calendarArr[count].date)).date()) ?
+                                        Sdetial(calendarArr[count], rowid, colid)
+                                        :
+                                        ''
+                                }
+                            </div>
+                        )
+                    })
+                }</div>
 
             })
         }

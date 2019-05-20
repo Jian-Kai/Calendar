@@ -25,14 +25,23 @@
     align-items: center;
     position: relative;
     height: 50px;
-    font-size: 16px;
-    line-height: 1.25;
 }
 
 .now {
     top: 4px;
     height: 42px;
     background: white;
+}
+
+.tab.now span{
+    color: #e10500;
+}
+
+.tab span{
+    color: #666;
+    font-size: 16px;
+    line-height: 1.25;
+    text-align: center;
 }
 
 .btn {

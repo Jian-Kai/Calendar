@@ -15,9 +15,17 @@ const Dropdown = ({ fetch }) => {
     )
 }
 
+const Switch = ({mode, modeChange}) =>{
+    return <div onClick={modeChange}>
+        {
+            (mode)? '切換列表模式':'切換月曆模式'
+        }
+    </div>
+}
+
 const App = () => {
     const [data, setData] = useState([]);
-
+    const [mode, setMode] = useState(true);
     let date = {};
     let month = [];
 
@@ -45,13 +53,17 @@ const App = () => {
     console.log(date);
     console.log(month);
 
-
+    const modeChange = () => {
+        let newMode = mode;
+        setMode(!newMode)
+    }
 
     return (
         <div>
             <Dropdown fetch={fetchData} />
+            <Switch mode={mode} modeChange={modeChange} />
             {
-                (data.length > 0)? <Calendar date={date} month={month}/> :''
+                (data.length > 0)? <Calendar date={date} month={month} mode={mode}/> :''
             }
         </div>)
 }
