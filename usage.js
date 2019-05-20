@@ -28,9 +28,9 @@ $('.calendars').calendar({
 		// 保證出團
         'guaranteed': 'guaranteed',
         // 狀態
-        'status': 'status',
+        'state': 'status',
         // 可賣團位
-        'available': 'availableVancancy',
+        'onsell': 'availableVancancy',
         // 團位
         'total': 'totalVacnacy',
         // 價格

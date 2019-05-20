@@ -1,20 +1,26 @@
+body{
+    font-family: Verdana, Arial, "\5FAE\8EDF\6B63\9ED1\9AD4", "Microsoft JhengHei", "\5FAE\8EDF\96C5\9ED1\9AD4", "Microsoft YaHei";
+}
+
 .monthLayout {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     cursor: pointer;
+    box-sizing: border-box;
+    float: left;
 }
 
 .month {
     height: 50px;
+    width: calc(100% - 40px);
     background: #ede9dd;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: center;
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 
 .tab {

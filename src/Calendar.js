@@ -1,14 +1,37 @@
-import React, { useState } from 'react';
-
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+import moment from 'moment';
 import Month from './Month/Month';
 import Day from './Day/Day';
 import Dates from './Dates/Dates';
 
-const Calendar = ({ date, month, mode }) => {
+const Calendar = (props, ref ) => {
+    const { date, month, option, mode, width} = props;
+    // console.log(option.initYearMonth)
+    let page = month.indexOf(option.initYearMonth);
+    if (page === -1) {
+        let pre = moment(option.initYearMonth + '01').subtract(1, 'M').format('YYYYMM');
+        let next = moment(option.initYearMonth + '01').add(1, 'M').format('YYYYMM');
+        // console.log(pre)
+        if (month.indexOf(pre) > -1 && month.indexOf(next) > -1)
+            page = (date[pre].length > date[next].length) ? month.indexOf(pre) : month.indexOf(next);
+        else if (month.indexOf(pre) > -1)
+            page = month.indexOf(pre);
+        else if (month.indexOf(next) > -1)
+            page = month.indexOf(next);
+    }
 
-    const [current, setCurrent] = useState(0);
-    const [focus, setFocus] = useState(0);
-    const width = (document.body.clientWidth) / 7;
+    // console.log(page);
+    let cur = 0;
+    let foc = 0;
+    if (page === month.length - 1) {
+        cur = page - 2; foc = 2;
+    } else if (page === 0) {
+        cur = 0; foc = 0
+    } else {
+        cur = page; foc = 1;
+    }
+    const [current, setCurrent] = useState(cur);
+    const [focus, setFocus] = useState(foc);
     const [arr, setArr] = useState(
         () => {
             const col = 6;
@@ -24,7 +47,9 @@ const Calendar = ({ date, month, mode }) => {
             return temp;
         }
     )
-    
+
+
+
     // handle month bar moving when it need move
     const moveMon = (value) => {
         let newCurrent = current;
@@ -34,17 +59,18 @@ const Calendar = ({ date, month, mode }) => {
         setCurrent(newCurrent);
     }
     // handle month bar click
-    const clickMon = (value, id) => {
+    const clickMon = (value, id, e) => {
         switch (value) {
             case -1:
                 console.log('pre')
-                if (id > 1)
+                if (id > 1){
                     setFocus(id + value)
+                }
                 else {
                     moveMon(value);
                     current === 0 ? setFocus(0) : setFocus(1);
                 }
-                //initDateclick();
+                option.onClickPrev(e, date[month[current + focus - 1]]);
                 break;
             case 1:
                 console.log('next')
@@ -54,7 +80,7 @@ const Calendar = ({ date, month, mode }) => {
                     moveMon(value);
                     current + 2 === month.length - 1 ? setFocus(2) : setFocus(1);
                 }
-                //initDateclick();
+                option.onClickNext(e, date[month[current + focus + 1]]);
                 break;
             case 0:
                 console.log('month');
@@ -78,7 +104,7 @@ const Calendar = ({ date, month, mode }) => {
         initDateclick();
     }
 
-    const initDateclick = () =>{
+    const initDateclick = () => {
         let newArr = [...arr];
         for (let i = 0; i < newArr.length; i++) {
             for (let j = 0; j < newArr[i].length; j++)
@@ -87,7 +113,7 @@ const Calendar = ({ date, month, mode }) => {
         setArr(newArr);
     }
 
-    const clickDate = (de, Dr, Dc) => {
+    const clickDate = (de, Dr, Dc, e) => {
         let newArr = [...arr];
         for (let i = 0; i < newArr.length; i++) {
             for (let j = 0; j < newArr[i].length; j++)
@@ -95,16 +121,29 @@ const Calendar = ({ date, month, mode }) => {
         }
         newArr[Dc][Dr] = 1;
         setArr(newArr)
-        console.log(arr[Dc][Dr])
+        // console.log(e)
+        option.onClickDate(e, de)
     }
 
-    // console.log(date[month[current + focus]])
+    //console.log(date[month[current + focus]])
 
-    return <div>
-        <Month current={current} focus={focus} month={month} clickMon={clickMon} />
-        <Day width={width}/>
-        <Dates mode={mode} width={width} data={date[month[current + focus]]} arr={arr} clickDate={clickDate}/>
+    //const inputRef = useRef();
+    useImperativeHandle(ref, () => ({
+        nextMonth: () => {
+            clickMon(1, focus);
+            return;
+        },
+        prevMonth:()=>{
+            clickMon(-1, focus);
+            return;
+        }
+    }));
+
+    return <div >
+        <Month width={width} current={current} focus={focus} month={month} clickMon={clickMon} option={option} />
+        <Day width={width} />
+        <Dates mode={mode} width={width} data={date[month[current + focus]]} arr={arr} clickDate={clickDate} option={option} />
     </div>
 }
 
-export default Calendar;
+export default forwardRef(Calendar);

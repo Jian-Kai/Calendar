@@ -4,9 +4,9 @@ import moment from 'moment';
 
 import Detial from './Detial';
 
-const Dates = ({ mode, width, data, arr, clickDate }) => {
-    const thewidth = (!mode) ? document.body.clientWidth : width;
-    console.log(thewidth)
+const Dates = ({ mode, width, data, arr, clickDate, option }) => {
+    const thewidth = (!mode) ? width : (width / 7);
+    // console.log(thewidth)
 
     const week = (!mode) ? 'list' : 'week';
 
@@ -15,11 +15,25 @@ const Dates = ({ mode, width, data, arr, clickDate }) => {
     for (let i = 0; i < thisMon.length; i++) {
         let found = calendarArr.find((trip) => trip.date === thisMon[i].date);
         if (!found)
-            calendarArr.push(thisMon[i])
+            calendarArr.push({
+                "guaranteed": thisMon[i].guaranteed || thisMon[i][option.dataKeySetting.guaranteed],
+                "date": thisMon[i].date,
+                "price": thisMon[i].price || thisMon[i][option.dataKeySetting.price],
+                "availableVancancy": thisMon[i].availableVancancy || thisMon[i][option.dataKeySetting.availableVancancy],
+                "totalVacnacy": thisMon[i].totalVacnacy || thisMon[i][option.dataKeySetting.totalVacnacy],
+                "status": thisMon[i].status || thisMon[i][option.dataKeySetting.status]
+            })
         else {
             let index = calendarArr.indexOf(found);
-            if (thisMon[i].price < found.price)
-                calendarArr[index] = found
+            if (thisMon[i][option.dataKeySetting.price] < found[option.dataKeySetting.price])
+                calendarArr[index] = {
+                    "guaranteed": thisMon[i].guaranteed || thisMon[i][option.dataKeySetting.guaranteed],
+                    "date": thisMon[i].date,
+                    "price": thisMon[i].price || thisMon[i][option.dataKeySetting.price],
+                    "availableVancancy": thisMon[i].availableVancancy || thisMon[i][option.dataKeySetting.availableVancancy],
+                    "totalVacnacy": thisMon[i].totalVacnacy || thisMon[i][option.dataKeySetting.totalVacnacy],
+                    "status": thisMon[i].status || thisMon[i][option.dataKeySetting.status]
+                }
         }
     }
     calendarArr.sort((a, b) => a.date > b.date ? 1 : -1)
@@ -36,7 +50,7 @@ const Dates = ({ mode, width, data, arr, clickDate }) => {
         if (count < calendarArr.length - 1)
             count++;
         if (deti !== null) {
-            return <Detial deti={deti} row={r} col={c} click={clickDate} mode={mode} />
+            return <Detial deti={deti} row={r} col={c} click={clickDate} mode={mode} date={c * 7 + r - firstDay + 1} />
         }
     }
 
@@ -63,16 +77,10 @@ const Dates = ({ mode, width, data, arr, clickDate }) => {
 
                             <div key={rowid} className={classD} style={{ width: thewidth }}>
                                 {
-                                    (colid * 7 + rowid >= firstDay && colid * 7 + rowid < final) ?
+                                    (colid * 7 + rowid >= firstDay && colid * 7 + rowid < final && mode) ?
                                         <span className='num'>
                                             {colid * 7 + rowid - firstDay + 1}
                                         </span>
-                                        :
-                                        ''
-                                }
-                                {
-                                    (colid * 7 + rowid - firstDay + 1 === moment(new Date(calendarArr[count].date)).date() && calendarArr[count].guaranteed) ?
-                                        <span className='guaranteed'>成團</span>
                                         :
                                         ''
                                 }

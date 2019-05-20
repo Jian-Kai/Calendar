@@ -11,6 +11,7 @@
     cursor: default;
     background: #FFFFFF;
     padding: 0;
+    float: left;
 }
 
 .day{
