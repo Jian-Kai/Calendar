@@ -5,7 +5,7 @@ import Day from './Day/Day';
 import Dates from './Dates/Dates';
 
 const Calendar = (props, ref) => {
-    const { date, month, option, mode, width, modeChange, pushDate } = props;
+    const { date, month, option, mode, width, modeChange, pushDate, resetDate } = props;
     // console.log(option.initYearMonth)
     let page = month.indexOf(option.initYearMonth);
     if (page === -1) {
@@ -29,7 +29,7 @@ const Calendar = (props, ref) => {
         } else if (page === 0) {
             cur = 0; foc = 0
         } else {
-            cur = page; foc = 1;
+            cur = page - 1; foc = 1;
         }
     }
 
@@ -77,8 +77,10 @@ const Calendar = (props, ref) => {
                 break;
             case 1:
                 console.log('next')
-                if (id < 1)
-                    setFocus(id + value)
+                if (id < 1) {
+                    if (id + current < month.length - 1)
+                        setFocus(id + value)
+                }
                 else {
                     moveMon(value);
                     current + 2 === month.length - 1 ? setFocus(2) : setFocus(1);
@@ -131,6 +133,7 @@ const Calendar = (props, ref) => {
     //console.log(date[month[current + focus]])
 
     // const inputRef = useRef(ref);
+    // handle module method
     useImperativeHandle(ref, () => ({
         nextMonth: () => {
             clickMon(1, focus);
@@ -144,26 +147,41 @@ const Calendar = (props, ref) => {
             modeChange();
             return;
         },
-        inputData: () => {
-            const input = [{
+        inputData: (input) => {
+            for (let i = 0; i < input.length; i++) {
+                input[i].new = true;
+                const newYM = moment(input[i].date).format('YYYYMM');
+                //console.log(input.date)
+                date[newYM].push(input[i]);
+                pushDate(date, newYM);
+            }
+            return;
+        },
+        resetDate: (input) => {
+            resetDate([{
+                "guaranteed": true, // {boolean}
+                "date": "2016/11/22", // {string} YYYY/MM/DD
+                "price": "234567", // {string|number} XXXXXX | 近期上架
+                "availableVancancy": 0, // {number}
+                "totalVacnacy": 20, // {number}
+                "status": "報名" // {string} 報名 | 後補 | 預定 | 截止 | 額滿 | 關團
+            }, {
                 "guaranteed": true, // {boolean}
                 "date": "2016/11/20", // {string} YYYY/MM/DD
                 "price": "234567", // {string|number} XXXXXX | 近期上架
                 "availableVancancy": 0, // {number}
                 "totalVacnacy": 20, // {number}
                 "status": "報名" // {string} 報名 | 後補 | 預定 | 截止 | 額滿 | 關團
-            }];
-            const newYM = moment(input[0].date).format('YYYYMM');
-            //console.log(input.date)
-            date[newYM].push(input[0]);
-            pushDate(date, newYM);
-            return;
+            }, ])
         }
     }));
 
     return <div >
         <Month width={width} current={current} focus={focus} month={month} clickMon={clickMon} option={option} />
-        <Day width={width} />
+        {
+            (mode)? <Day width={width} /> : ''
+        }
+        
         <Dates mode={mode} width={width} data={date[month[current + focus]]} arr={arr} clickDate={clickDate} option={option} />
     </div>
 }

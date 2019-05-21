@@ -14,6 +14,7 @@ const Dates = ({ mode, width, data, arr, clickDate, option }) => {
     let calendarArr = [];
     for (let i = 0; i < thisMon.length; i++) {
         let found = calendarArr.find((trip) => trip.date === thisMon[i].date);
+        console.log(thisMon[i])
         if (!found)
             calendarArr.push({
                 "guaranteed": thisMon[i].guaranteed || thisMon[i][option.dataKeySetting.guaranteed],
@@ -25,7 +26,18 @@ const Dates = ({ mode, width, data, arr, clickDate, option }) => {
             })
         else {
             let index = calendarArr.indexOf(found);
-            if (thisMon[i][option.dataKeySetting.price] < found[option.dataKeySetting.price])
+            if (thisMon[i].new === undefined) {
+                if (thisMon[i][option.dataKeySetting.price] < found[option.dataKeySetting.price])
+                    calendarArr[index] = {
+                        "guaranteed": thisMon[i].guaranteed || thisMon[i][option.dataKeySetting.guaranteed],
+                        "date": thisMon[i].date,
+                        "price": thisMon[i].price || thisMon[i][option.dataKeySetting.price],
+                        "availableVancancy": thisMon[i].availableVancancy || thisMon[i][option.dataKeySetting.availableVancancy],
+                        "totalVacnacy": thisMon[i].totalVacnacy || thisMon[i][option.dataKeySetting.totalVacnacy],
+                        "status": thisMon[i].status || thisMon[i][option.dataKeySetting.status]
+                    }
+            }
+            else
                 calendarArr[index] = {
                     "guaranteed": thisMon[i].guaranteed || thisMon[i][option.dataKeySetting.guaranteed],
                     "date": thisMon[i].date,

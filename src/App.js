@@ -78,7 +78,7 @@ const App = () => {
     }
 
     const option = {
-        initYearMonth: '',
+        initYearMonth: '201710',
         dataKeySetting: {
             // 保證出團
             'guaranteed': 'certain',
@@ -111,15 +111,20 @@ const App = () => {
 
     const inputEl = useRef(null);
 
-    const pushDate = (input, YM) =>{
+    const pushDate = (input, YM) => {
         console.log(input);
         let temp = []
-        for(let i in input){
-            for(let j = 0; j < input[i].length; j++)
+        for (let i in input) {
+            for (let j = 0; j < input[i].length; j++)
                 temp.push(input[i][j])
         }
         setData(temp);
         console.log(data);
+    }
+
+    const resetDate = (input) => {
+
+        setData(input);
     }
 
     return (
@@ -128,7 +133,16 @@ const App = () => {
             <Switch mode={mode} modeChange={modeChange} />
             <br />
             {
-                (data.length > 0) ? <Calendar date={date} pushDate={pushDate} month={month} option={option} mode={mode} width={size} modeChange={modeChange} ref={inputEl} /> : ''
+                (data.length > 0) ? 
+                <Calendar date={date}
+                    pushDate={pushDate}
+                    resetDate={resetDate}
+                    month={month}
+                    option={option}
+                    mode={mode}
+                    width={size}
+                    modeChange={modeChange}
+                    ref={inputEl} /> : ''
             }
         </div>)
 }

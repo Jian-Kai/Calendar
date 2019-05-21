@@ -5,8 +5,8 @@ const Month = ({ width, current, focus, month, clickMon }) => {
     const thewidth = (width - 40) / 3;
     let show = [month[current], month[current + 1], month[current + 2]];
 
-     console.log('current:' + current);
-     console.log('focus:' + focus);
+    console.log('current:' + current);
+    console.log('focus:' + focus);
 
     return (
         <div className='monthLayout'>
@@ -17,17 +17,27 @@ const Month = ({ width, current, focus, month, clickMon }) => {
                         const style = {
                             width: thewidth,
                         }
-                        let tab_class = (focus === index) ? 'tab now' : 'tab';
-                        // console.log(li)
-                        let Y = li.slice(0, 4);
-                        let M = li.slice(4, li.length)
-                        return <li key={index} className={tab_class} style={style} onClick={(e) => clickMon(0, index, e)}>
-                            <a>
-                                <span>
-                                    {Y + ' ' + M + '月'}
-                                </span>
-                            </a>
-                        </li>
+                        if (li !== undefined) {
+                            
+                            let tab_class = (focus === index) ? 'tab now' : 'tab';
+                            // console.log(li)
+                            let Y = li.slice(0, 4);
+                            let M = li.slice(4, li.length)
+                            return <li key={index} className={tab_class} style={style} onClick={(e) => clickMon(0, index, e)}>
+                                <a>
+                                    <span>
+                                        {Y + ' ' + M + '月'}
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        return <li key={index} className='tab' style={style} >
+                                <a>
+                                    <span>
+                                    </span>
+                                </a>
+                            </li>
+
                     })
                 }
             </ul>
